@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter_barcode_listener/flutter_barcode_listener.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import 'second_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -18,18 +20,17 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Barcode Scanner Demo'),
+      home: const MyHomePage(title: 'Barcode Scanner Demo'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   final String title;
-
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -49,12 +50,12 @@ class _MyHomePageState extends State<MyHomePage> {
           onVisibilityChanged: (VisibilityInfo info) {
             visible = info.visibleFraction > 0;
           },
-          key: Key('visible-detector-key'),
+          key: const Key('visible-detector-key'),
           child: BarcodeKeyboardListener(
-            bufferDuration: Duration(milliseconds: 200),
+            bufferDuration: const Duration(milliseconds: 200),
             onBarcodeScanned: (barcode) {
               if (!visible) return;
-              print(barcode);
+              debugPrint(barcode);
               setState(() {
                 _barcode = barcode;
               });
@@ -65,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Text(
                   _barcode == null ? 'SCAN BARCODE' : 'BARCODE: $_barcode',
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(20.0),
@@ -74,8 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  SecondScreen())),
-                      child: Center(child: Text('Second screen'))),
+                                  const SecondScreen())),
+                      child: const Center(child: Text('Second screen'))),
                 )
               ],
             ),

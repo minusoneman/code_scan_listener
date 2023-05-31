@@ -8,8 +8,10 @@
 .buildlog/
 .history
 .svn/
+migrate_working_dir/
 
 # IntelliJ related
+*.iml
 *.ipr
 *.iws
 .idea/
@@ -29,13 +31,14 @@
 .pub-cache/
 .pub/
 /build/
-/windows/flutter/ephemeral/**
-
-# Web related
-lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
