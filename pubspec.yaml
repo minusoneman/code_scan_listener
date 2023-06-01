@@ -1,6 +1,6 @@
 name: code_scan_listener
 description: Listen for any hardware barcode scanner without any manufacturer SDK
-version: 0.2.0
+version: 0.2.1
 homepage: https://github.com/utamori/code_scan_listener
 
 environment:

@@ -1,3 +1,7 @@
+## [0.2.1] - Fix dependencies
+
+- move checks to dev dependencies
+
 ## [0.2.0] - Dart 3
 
 - upgrade Dart 3
