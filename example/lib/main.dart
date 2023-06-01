@@ -1,5 +1,5 @@
+import 'package:code_scan_listener/code_scan_listener.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_listener/flutter_barcode_listener.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import 'second_screen.dart';
@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
             visible = info.visibleFraction > 0;
           },
           key: const Key('visible-detector-key'),
-          child: BarcodeKeyboardListener(
+          child: CodeScanListener(
             bufferDuration: const Duration(milliseconds: 200),
             onBarcodeScanned: (barcode) {
               if (!visible) return;
