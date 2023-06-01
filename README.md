@@ -1,8 +1,11 @@
-# flutter_barcode_listener
+# code_scan_listener
+
+This library is a fork of the flutter_barcode_listener.
 
 Listen for any hardware barcode scanner
 
 ## Problems with barcode scanning
+
 If you need to get barcode scanned from some hardware barcode scanner you generally have few ways to do it.
 
 1. implement some text input control (IE. TextEdit), call focus on it and make the scan
@@ -18,12 +21,15 @@ Listening for special system events (IE. Anroid service intents) is always tied 
 And there's third way, simply listen for raw keyboard events and figure out what's barcode and what's not. Downside of this solution is that you need to figure out what's actual user interaction and what's barcode scan. Upside is it doesn't require any per manufacturer/device implementation and you're pretty much suporting all barcode scanners, including external ones with bluetooth or wifi. And it's cross platform friendly.
 
 ## Implementation idea
+
 All hardware barcode devices have few things in common
+
 - they act as a keyboard when barcode is scanned
 - all keyboard events are fired in extremly small time frame (less than 100 ms between each character)
 - barcode is terminated with special character (enter in majority)
 
 So to figure out what is actual barcode and what is simple keyboard event that should be ignored this package uses following logic
+
 1. listen for physical keyboard raw key up event
 2. filter out only 'REAL' characters (ASCII codes lower than 256, without special characters except enter)
 3. on each new key check if previous key is older than `bufferDuration`, if it's older clear internal buffer.
