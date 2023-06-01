@@ -58,34 +58,23 @@ class _CodeScanListenerState extends State<CodeScanListener> {
     switch ((keyEvent, widget.useKeyDownEvent)) {
       case (KeyEvent(logicalKey: final key), _)
           when key.keyId > 255 && key != LogicalKeyboardKey.enter:
+        return false;
       case (KeyUpEvent(logicalKey: LogicalKeyboardKey.enter), false):
         _controller.sink.add(_lineFeed);
+        return false;
+
       case (final KeyUpEvent event, false):
         _controller.sink.add(event.logicalKey.keyLabel);
+        return false;
+
       case (KeyDownEvent(logicalKey: LogicalKeyboardKey.enter), true):
         _controller.sink.add(_lineFeed);
+        return false;
+
       case (final KeyDownEvent event, true):
         _controller.sink.add(event.logicalKey.keyLabel);
+        return false;
     }
-
-    // if (keyEvent case final KeyUpEvent event when !widget.useKeyDownEvent) {
-    //   switch (event.logicalKey) {
-    //     case LogicalKeyboardKey.enter:
-    //       _controller.sink.add(_lineFeed);
-    //     case _:
-    //       _controller.sink.add(event.logicalKey.keyLabel);
-    //   }
-    // }
-
-    // /// for Windows
-    // if (keyEvent case final KeyDownEvent event when widget.useKeyDownEvent) {
-    //   switch (event.logicalKey) {
-    //     case LogicalKeyboardKey.enter:
-    //       _controller.sink.add(_lineFeed);
-    //     case _:
-    //       _controller.sink.add(event.logicalKey.keyLabel);
-    //   }
-    // }
 
     return false;
   }

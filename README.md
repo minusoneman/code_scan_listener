@@ -2,6 +2,8 @@
 
 This library is a fork of the flutter_barcode_listener.
 
+This utilizes the HardwareKeyboard API instead of the RawKeyboard API.
+
 Listen for any hardware barcode scanner
 
 ## Problems with barcode scanning
