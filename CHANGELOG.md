@@ -1,3 +1,7 @@
+## [0.2.2] - add topics
+
+- add topics to pubspec.yaml
+
 ## [0.2.1] - Fix dependencies
 
 - move checks to dev dependencies
