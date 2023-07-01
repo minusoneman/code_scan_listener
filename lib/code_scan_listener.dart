@@ -19,7 +19,7 @@ const String _lineFeed = '\n';
 /// Windows seems to be using the [KeyDownEvent] instead of the [KeyUpEvent], this behaviour can be managed by setting [useKeyDownEvent].
 class CodeScanListener extends StatefulWidget {
   final Widget child;
-  final BarcodeScannedCallback onBarcodeScanned;
+  final BarcodeScannedCallback? onBarcodeScanned;
   final Duration bufferDuration;
   final bool useKeyDownEvent;
 
@@ -92,7 +92,7 @@ class _CodeScanListenerState extends State<CodeScanListener> {
     checkPendingCharCodesToClear();
     _lastScannedCharCodeTime = clock.now();
     if (char == _lineFeed) {
-      widget.onBarcodeScanned.call(_scannedChars.join());
+      widget.onBarcodeScanned?.call(_scannedChars.join());
       resetScannedCharCodes();
     } else {
       // add character to list of scanned characters;

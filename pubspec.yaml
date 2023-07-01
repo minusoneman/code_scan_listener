@@ -1,8 +1,8 @@
 name: code_scan_listener
 description: Listen for any hardware barcode(or qrcode) scanner without any manufacturer SDK
-version: 0.2.2
+version: 0.3.0
 homepage: https://github.com/utamori/code_scan_listener
-topics: [barcode, qrcode, scanner, listener, HardwareKeyboard]
+topics: [barcode, qrcode, scanner, listener, hardware-key-board]
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

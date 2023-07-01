@@ -1,3 +1,7 @@
+## [0.3.0] - nullable callback
+
+- make BarcodeScannedCallback to nullable
+
 ## [0.2.2] - add topics
 
 - add topics to pubspec.yaml
