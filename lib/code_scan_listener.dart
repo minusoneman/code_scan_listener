@@ -13,6 +13,8 @@ const Duration _hundredMs = Duration(milliseconds: 100);
 
 const String _lineFeed = '\n';
 
+enum SuffixType { enter, tab }
+
 /// This widget will listen for raw PHYSICAL keyboard events　even when other controls have primary focus.
 /// It will buffer all characters coming in specifed `bufferDuration` time frame　that end with line feed character and call callback function with result.
 /// Keep in mind this widget will listen for events even when not visible.
@@ -22,32 +24,42 @@ class CodeScanListener extends StatefulWidget {
   final BarcodeScannedCallback? onBarcodeScanned;
   final Duration bufferDuration;
   final bool useKeyDownEvent;
+  final SuffixType suffixType;
 
   /// This widget will listFren for raw PHYSICAL keyboard events　even when other controls have primary focus.
   /// It will buffer all characters coming in specifed `bufferDuration` time frame　that end with line feed character and call callback function with result.
   /// Keep in mind this widget will listen for events even when not visible.
-  const CodeScanListener(
-      {super.key,
+  const CodeScanListener({
+    super.key,
 
-      /// Child widget to be displayed.
-      required this.child,
+    /// Child widget to be displayed.
+    required this.child,
 
-      /// Callback to be called when barcode is scanned.
-      required this.onBarcodeScanned,
+    /// Callback to be called when barcode is scanned.
+    required this.onBarcodeScanned,
 
-      /// When experiencing issueswith empty barcodes on Windows,set this value to true. Default value is `false`.
-      this.useKeyDownEvent = false,
+    /// When experiencing issueswith empty barcodes on Windows,set this value to true. Default value is `false`.
+    this.useKeyDownEvent = false,
 
-      /// Maximum time between two key events.
-      /// If time between two key events is longer than this value
-      /// previous keys will be ignored.
-      this.bufferDuration = _hundredMs});
+    /// Maximum time between two key events.
+    /// If time between two key events is longer than this value
+    /// previous keys will be ignored.
+    this.bufferDuration = _hundredMs,
+
+    /// detect suffix type
+    this.suffixType = SuffixType.enter,
+  });
 
   @override
   State<CodeScanListener> createState() => _CodeScanListenerState();
 }
 
 class _CodeScanListenerState extends State<CodeScanListener> {
+  late final suffixKey = switch (widget.suffixType) {
+    SuffixType.enter => LogicalKeyboardKey.enter,
+    SuffixType.tab => LogicalKeyboardKey.tab,
+  };
+
   final List<String> _scannedChars = [];
   final _controller = StreamController<String?>();
   late StreamSubscription<String?> _keyboardSubscription;
@@ -57,9 +69,9 @@ class _CodeScanListenerState extends State<CodeScanListener> {
   bool _keyBoardCallback(KeyEvent keyEvent) {
     switch ((keyEvent, widget.useKeyDownEvent)) {
       case (KeyEvent(logicalKey: final key), _)
-          when key.keyId > 255 && key != LogicalKeyboardKey.enter:
+          when key.keyId > 255 && key != suffixKey:
         return false;
-      case (KeyUpEvent(logicalKey: LogicalKeyboardKey.enter), false):
+      case (KeyUpEvent(logicalKey: final key), false) when key == suffixKey:
         _controller.sink.add(_lineFeed);
         return false;
 
@@ -67,7 +79,7 @@ class _CodeScanListenerState extends State<CodeScanListener> {
         _controller.sink.add(event.logicalKey.keyLabel);
         return false;
 
-      case (KeyDownEvent(logicalKey: LogicalKeyboardKey.enter), true):
+      case (KeyDownEvent(logicalKey: final key), true) when key == suffixKey:
         _controller.sink.add(_lineFeed);
         return false;
 

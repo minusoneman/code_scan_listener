@@ -30,4 +30,30 @@ void main() {
     // without enter
     check(scannedBarcode).equals('23');
   });
+
+  testWidgets('Tab suffix', (tester) async {
+    String? scannedBarcode;
+    await tester.pumpWidget(CodeScanListener(
+      onBarcodeScanned: (barcode) => scannedBarcode = barcode,
+      suffixType: SuffixType.tab,
+      child: Container(),
+    ));
+    await tester.sendKeyEvent(LogicalKeyboardKey.digit1);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+
+    check(scannedBarcode).equals('1');
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.digit2);
+    await tester.sendKeyEvent(LogicalKeyboardKey.digit3);
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+
+    check(scannedBarcode).equals('23');
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.digit4);
+    await tester.sendKeyEvent(LogicalKeyboardKey.digit5);
+
+    // without tab
+    check(scannedBarcode).equals('23');
+  });
 }
