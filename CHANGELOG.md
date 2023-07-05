@@ -1,3 +1,7 @@
+## [0.4.0] - tab suffix mode
+
+- add option tab suffix
+
 ## [0.3.0] - nullable callback
 
 - make BarcodeScannedCallback to nullable
