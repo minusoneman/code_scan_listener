@@ -1,3 +1,7 @@
+## [0.4.1] - fix suffix bug
+
+- fix suffix bug
+
 ## [0.4.0] - tab suffix mode
 
 - add option tab suffix

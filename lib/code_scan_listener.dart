@@ -11,8 +11,6 @@ typedef BarcodeScannedCallback = void Function(String barcode);
 
 const Duration _hundredMs = Duration(milliseconds: 100);
 
-const String _lineFeed = '\n';
-
 enum SuffixType { enter, tab }
 
 /// This widget will listen for raw PHYSICAL keyboard events　even when other controls have primary focus.
@@ -60,6 +58,11 @@ class _CodeScanListenerState extends State<CodeScanListener> {
     SuffixType.tab => LogicalKeyboardKey.tab,
   };
 
+  late final suffix = switch (widget.suffixType) {
+    SuffixType.enter => '\n',
+    SuffixType.tab => '\t',
+  };
+
   final List<String> _scannedChars = [];
   final _controller = StreamController<String?>();
   late StreamSubscription<String?> _keyboardSubscription;
@@ -72,7 +75,7 @@ class _CodeScanListenerState extends State<CodeScanListener> {
           when key.keyId > 255 && key != suffixKey:
         return false;
       case (KeyUpEvent(logicalKey: final key), false) when key == suffixKey:
-        _controller.sink.add(_lineFeed);
+        _controller.sink.add(suffix);
         return false;
 
       case (final KeyUpEvent event, false):
@@ -80,7 +83,7 @@ class _CodeScanListenerState extends State<CodeScanListener> {
         return false;
 
       case (KeyDownEvent(logicalKey: final key), true) when key == suffixKey:
-        _controller.sink.add(_lineFeed);
+        _controller.sink.add(suffix);
         return false;
 
       case (final KeyDownEvent event, true):
@@ -103,7 +106,7 @@ class _CodeScanListenerState extends State<CodeScanListener> {
     // remove any pending characters older than bufferDuration value
     checkPendingCharCodesToClear();
     _lastScannedCharCodeTime = clock.now();
-    if (char == _lineFeed) {
+    if (char == suffix) {
       widget.onBarcodeScanned?.call(_scannedChars.join());
       resetScannedCharCodes();
     } else {
