@@ -52,6 +52,112 @@ class CodeScanListener extends StatefulWidget {
   State<CodeScanListener> createState() => _CodeScanListenerState();
 }
 
+const validChars = <String>{
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '0',
+  '+',
+  '-',
+  '/',
+};
+
+const specialChars = <String>{
+  '+',
+  '-',
+};
+
+const debugNames = <String>{
+  'Digit 1',
+  'Digit 2',
+  'Digit 3',
+  'Digit 4',
+  'Digit 5',
+  'Digit 6',
+  'Digit 7',
+  'Digit 8',
+  'Digit 9',
+  'Digit 0',
+};
+
+const keyMap = {
+  'Slash': '/',
+  'Digit 0': '0',
+  'Digit 1': '1',
+  'Digit 2': '2',
+  'Digit 3': '3',
+  'Digit 4': '4',
+  'Digit 5': '5',
+  'Digit 6': '6',
+  'Digit 7': '7',
+  'Digit 8': '8',
+  'Digit 9': '9',
+  'Key A': 'A',
+  'Key B': 'B',
+  'Key C': 'C',
+  'Key D': 'D',
+  'Key E': 'E',
+  'Key F': 'F',
+  'Key G': 'G',
+  'Key H': 'H',
+  'Key I': 'I',
+  'Key J': 'J',
+  'Key K': 'K',
+  'Key L': 'L',
+  'Key M': 'M',
+  'Key N': 'N',
+  'Key O': 'O',
+  'Key P': 'P',
+  'Key Q': 'Q',
+  'Key R': 'R',
+  'Key S': 'S',
+  'Key T': 'T',
+  'Key U': 'U',
+  'Key V': 'V',
+  'Key W': 'W',
+  'Key X': 'X',
+  'Key Y': 'Y',
+  'Key Z': 'Z',
+  'Minus': '-',
+  'Numpad Subtract': '-',
+  'Numpad Add': '+',
+  'Equal': '+',
+};
+
+const nonValidChars = <String>{'='};
+
 class _CodeScanListenerState extends State<CodeScanListener> {
   late final suffixKey = switch (widget.suffixType) {
     SuffixType.enter => LogicalKeyboardKey.enter,
@@ -70,28 +176,73 @@ class _CodeScanListenerState extends State<CodeScanListener> {
   DateTime? _lastScannedCharCodeTime;
 
   bool _keyBoardCallback(KeyEvent keyEvent) {
-    switch ((keyEvent, widget.useKeyDownEvent)) {
-      case (KeyEvent(logicalKey: final key), _)
-          when key.keyId > 255 && key != suffixKey:
-        return false;
-      case (KeyUpEvent(logicalKey: final key), false) when key == suffixKey:
-        _controller.sink.add(suffix);
-        return false;
+    Duration? prevDuration;
 
-      case (final KeyUpEvent event, false):
-        _controller.sink.add(event.logicalKey.keyLabel);
-        return false;
+    final duration = keyEvent.timeStamp;
 
-      case (KeyDownEvent(logicalKey: final key), true) when key == suffixKey:
-        _controller.sink.add(suffix);
-        return false;
+    /// Avoid repeated key presse - specifically on Sunmi scanners
+    if (prevDuration == duration) {
+      return false;
+    }
 
-      case (final KeyDownEvent event, true):
-        _controller.sink.add(event.logicalKey.keyLabel);
-        return false;
+    prevDuration = duration;
+
+    print("event type: ${keyEvent.runtimeType}");
+
+    if (keyEvent.runtimeType != KeyDownEvent) {
+      return false;
+    }
+
+    print("debug name: ${keyEvent.physicalKey.debugName}");
+
+    if (keyMap[keyEvent.physicalKey.debugName] != null) {
+      final key = keyMap[keyEvent.physicalKey.debugName];
+
+      print("key: $key");
+      _controller.sink.add(key);
+    } else if (keyEvent.logicalKey == suffixKey) {
+      _controller.sink.add(suffix);
     }
 
     return false;
+
+    // switch ((keyEvent, widget.useKeyDownEvent)) {
+    //   case (KeyDownEvent(logicalKey: final key), _)
+    //       when key != suffixKey && specialChars.contains(keyEvent.character):
+    //     _controller.sink.add(keyEvent.character);
+    //     return false;
+    //
+    //   case (KeyEvent(logicalKey: final key), _)
+    //       when (nonValidChars.contains(keyEvent.character) ||
+    //               nonValidChars.contains(key.keyLabel)) &&
+    //           key != suffixKey:
+    //     return false;
+    //
+    //   case (KeyEvent(logicalKey: final key), _)
+    //       when key.keyId > 255 && key != suffixKey:
+    //     return false;
+    //
+    //   case (KeyUpEvent(logicalKey: final key), false) when key == suffixKey:
+    //     _controller.sink.add(suffix);
+    //     return false;
+    //
+    //   case (final KeyUpEvent event, false):
+    //     if (specialChars.contains(keyEvent.logicalKey.keyLabel)) {
+    //       return false;
+    //     }
+    //     _controller.sink.add(event.logicalKey.keyLabel);
+    //     return false;
+    //
+    //   case (KeyDownEvent(logicalKey: final key), true) when key == suffixKey:
+    //     _controller.sink.add(suffix);
+    //     return false;
+    //
+    //   case (final KeyDownEvent event, true):
+    //     _controller.sink.add(event.logicalKey.keyLabel);
+    //     return false;
+    // }
+
+    // return false;
   }
 
   @override
