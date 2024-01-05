@@ -52,111 +52,49 @@ class CodeScanListener extends StatefulWidget {
   State<CodeScanListener> createState() => _CodeScanListenerState();
 }
 
-const validChars = <String>{
-  'A',
-  'B',
-  'C',
-  'D',
-  'E',
-  'F',
-  'G',
-  'H',
-  'I',
-  'J',
-  'K',
-  'L',
-  'M',
-  'N',
-  'O',
-  'P',
-  'Q',
-  'R',
-  'S',
-  'T',
-  'U',
-  'V',
-  'W',
-  'X',
-  'Y',
-  'Z',
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '0',
-  '+',
-  '-',
-  '/',
-};
-
-const specialChars = <String>{
-  '+',
-  '-',
-};
-
-const debugNames = <String>{
-  'Digit 1',
-  'Digit 2',
-  'Digit 3',
-  'Digit 4',
-  'Digit 5',
-  'Digit 6',
-  'Digit 7',
-  'Digit 8',
-  'Digit 9',
-  'Digit 0',
-};
-
 const keyMap = {
-  'Slash': '/',
-  'Digit 0': '0',
-  'Digit 1': '1',
-  'Digit 2': '2',
-  'Digit 3': '3',
-  'Digit 4': '4',
-  'Digit 5': '5',
-  'Digit 6': '6',
-  'Digit 7': '7',
-  'Digit 8': '8',
-  'Digit 9': '9',
-  'Key A': 'A',
-  'Key B': 'B',
-  'Key C': 'C',
-  'Key D': 'D',
-  'Key E': 'E',
-  'Key F': 'F',
-  'Key G': 'G',
-  'Key H': 'H',
-  'Key I': 'I',
-  'Key J': 'J',
-  'Key K': 'K',
-  'Key L': 'L',
-  'Key M': 'M',
-  'Key N': 'N',
-  'Key O': 'O',
-  'Key P': 'P',
-  'Key Q': 'Q',
-  'Key R': 'R',
-  'Key S': 'S',
-  'Key T': 'T',
-  'Key U': 'U',
-  'Key V': 'V',
-  'Key W': 'W',
-  'Key X': 'X',
-  'Key Y': 'Y',
-  'Key Z': 'Z',
+  '/': '/',
+  '0': '0',
+  '1': '1',
+  '2': '2',
+  '3': '3',
+  '4': '4',
+  '5': '5',
+  '6': '6',
+  '7': '7',
+  '8': '8',
+  '9': '9',
+  'A': 'A',
+  'B': 'B',
+  'C': 'C',
+  'D': 'D',
+  'E': 'E',
+  'F': 'F',
+  'G': 'G',
+  'H': 'H',
+  'I': 'I',
+  'J': 'J',
+  'K': 'K',
+  'L': 'L',
+  'M': 'M',
+  'N': 'N',
+  'O': 'O',
+  'P': 'P',
+  'Q': 'Q',
+  'R': 'R',
+  'S': 'S',
+  'T': 'T',
+  'U': 'U',
+  'V': 'V',
+  'W': 'W',
+  'X': 'X',
+  'Y': 'Y',
+  'Z': 'Z',
   'Minus': '-',
   'Numpad Subtract': '-',
   'Numpad Add': '+',
   'Equal': '+',
 };
-
-const nonValidChars = <String>{'='};
 
 class _CodeScanListenerState extends State<CodeScanListener> {
   late final suffixKey = switch (widget.suffixType) {
@@ -176,6 +114,13 @@ class _CodeScanListenerState extends State<CodeScanListener> {
   DateTime? _lastScannedCharCodeTime;
 
   bool _keyBoardCallback(KeyEvent keyEvent) {
+    // print("timestamp: ${keyEvent.timeStamp}");
+    // print("keyId: ${keyEvent.logicalKey.keyId}");
+    // print("logicalKey: ${keyEvent}");
+    // print("char: ${keyEvent.character}");
+
+    // print("char: ${keyEvent.character}");
+
     Duration? prevDuration;
 
     final duration = keyEvent.timeStamp;
@@ -187,18 +132,19 @@ class _CodeScanListenerState extends State<CodeScanListener> {
 
     prevDuration = duration;
 
-    print("event type: ${keyEvent.runtimeType}");
-
-    if (keyEvent.runtimeType != KeyDownEvent) {
+    if (keyEvent is! KeyDownEvent) {
       return false;
     }
 
-    print("debug name: ${keyEvent.physicalKey.debugName}");
+    // print("keyEvent: ${keyEvent}");
+    //
+    // print("logicalKey : ${keyEvent.logicalKey.keyId}");
 
-    if (keyMap[keyEvent.physicalKey.debugName] != null) {
-      final key = keyMap[keyEvent.physicalKey.debugName];
+    if (keyMap[keyEvent.logicalKey.keyLabel] != null) {
+      final key = keyMap[keyEvent.logicalKey.keyLabel];
 
-      print("key: $key");
+      // print(key);
+
       _controller.sink.add(key);
     } else if (keyEvent.logicalKey == suffixKey) {
       _controller.sink.add(suffix);
