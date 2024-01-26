@@ -90,6 +90,10 @@ const keyMap = {
   'X': 'X',
   'Y': 'Y',
   'Z': 'Z',
+  '-': '-',
+  '.': '.',
+  '+': '+',
+  '=': '+',
   'Minus': '-',
   'Numpad Subtract': '-',
   'Numpad Add': '+',
@@ -118,7 +122,7 @@ class _CodeScanListenerState extends State<CodeScanListener> {
     // print("keyId: ${keyEvent.logicalKey.keyId}");
     // print("logicalKey: ${keyEvent}");
     // print("char: ${keyEvent.character}");
-
+    //
     // print("char: ${keyEvent.character}");
 
     Duration? prevDuration;
@@ -136,59 +140,19 @@ class _CodeScanListenerState extends State<CodeScanListener> {
       return false;
     }
 
-    // print("keyEvent: ${keyEvent}");
+    // print("keyEvent: $keyEvent");
     //
-    // print("logicalKey : ${keyEvent.logicalKey.keyId}");
+    // print("logicalKey : ${keyEvent.logicalKey}");
+    final key = keyMap[keyEvent.logicalKey.keyLabel];
 
-    if (keyMap[keyEvent.logicalKey.keyLabel] != null) {
-      final key = keyMap[keyEvent.logicalKey.keyLabel];
-
-      // print(key);
-
-      _controller.sink.add(key);
-    } else if (keyEvent.logicalKey == suffixKey) {
+    if (keyEvent.logicalKey == suffixKey) {
       _controller.sink.add(suffix);
+    } else if (key != null) {
+      // print("key: $key");
+      _controller.sink.add(key);
     }
 
     return false;
-
-    // switch ((keyEvent, widget.useKeyDownEvent)) {
-    //   case (KeyDownEvent(logicalKey: final key), _)
-    //       when key != suffixKey && specialChars.contains(keyEvent.character):
-    //     _controller.sink.add(keyEvent.character);
-    //     return false;
-    //
-    //   case (KeyEvent(logicalKey: final key), _)
-    //       when (nonValidChars.contains(keyEvent.character) ||
-    //               nonValidChars.contains(key.keyLabel)) &&
-    //           key != suffixKey:
-    //     return false;
-    //
-    //   case (KeyEvent(logicalKey: final key), _)
-    //       when key.keyId > 255 && key != suffixKey:
-    //     return false;
-    //
-    //   case (KeyUpEvent(logicalKey: final key), false) when key == suffixKey:
-    //     _controller.sink.add(suffix);
-    //     return false;
-    //
-    //   case (final KeyUpEvent event, false):
-    //     if (specialChars.contains(keyEvent.logicalKey.keyLabel)) {
-    //       return false;
-    //     }
-    //     _controller.sink.add(event.logicalKey.keyLabel);
-    //     return false;
-    //
-    //   case (KeyDownEvent(logicalKey: final key), true) when key == suffixKey:
-    //     _controller.sink.add(suffix);
-    //     return false;
-    //
-    //   case (final KeyDownEvent event, true):
-    //     _controller.sink.add(event.logicalKey.keyLabel);
-    //     return false;
-    // }
-
-    // return false;
   }
 
   @override
