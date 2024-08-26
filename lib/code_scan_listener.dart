@@ -1,6 +1,7 @@
 library;
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
@@ -100,6 +101,82 @@ const keyMap = {
   'Equal': '+',
 };
 
+const Map<int, String> _debugNames = <int, String>{
+  0x00070004: 'A',
+  0x00070005: 'B',
+  0x00070006: 'C',
+  0x00070007: 'D',
+  0x00070008: 'E',
+  0x00070009: 'F',
+  0x0007000a: 'G',
+  0x0007000b: 'H',
+  0x0007000c: 'I',
+  0x0007000d: 'J',
+  0x0007000e: 'K',
+  0x0007000f: 'L',
+  0x00070010: 'M',
+  0x00070011: 'N',
+  0x00070012: 'O',
+  0x00070013: 'P',
+  0x00070014: 'Q',
+  0x00070015: 'R',
+  0x00070016: 'S',
+  0x00070017: 'T',
+  0x00070018: 'U',
+  0x00070019: 'V',
+  0x0007001a: 'W',
+  0x0007001b: 'X',
+  0x0007001c: 'Y',
+  0x0007001d: 'Z',
+  0x0007001e: '1',
+  0x0007001f: '2',
+  0x00070020: '3',
+  0x00070021: '4',
+  0x00070022: '5',
+  0x00070023: '6',
+  0x00070024: '7',
+  0x00070025: '8',
+  0x00070026: '9',
+  0x00070027: '0',
+  0x00070028: 'Enter',
+  0x00070029: 'Escape',
+  0x0007002a: 'Backspace',
+  0x0007002b: 'Tab',
+  0x0007002c: 'Space',
+  0x0007002d: '-',
+  0x0007002e: 'Equal',
+  0x0007002f: 'Bracket Left',
+  0x00070030: 'Bracket Right',
+  0x00070031: 'Backslash',
+  0x00070033: 'Semicolon',
+  0x00070034: 'Quote',
+  0x00070035: 'Backquote',
+  0x00070036: 'Comma',
+  0x00070037: 'Period',
+  0x00070038: '/',
+  0x00070039: 'Caps Lock',
+  0x00070054: 'Numpad Divide',
+  0x00070055: 'Numpad Multiply',
+  0x00070056: 'Numpad Subtract',
+  0x00070057: 'Numpad Add',
+  0x00070058: 'Numpad Enter',
+  0x00070059: 'Numpad 1',
+  0x0007005a: 'Numpad 2',
+  0x0007005b: 'Numpad 3',
+  0x0007005c: 'Numpad 4',
+  0x0007005d: 'Numpad 5',
+  0x0007005e: 'Numpad 6',
+  0x0007005f: 'Numpad 7',
+  0x00070060: 'Numpad 8',
+  0x00070061: 'Numpad 9',
+  0x00070062: 'Numpad 0',
+  0x00070063: 'Numpad Decimal',
+  0x00070064: 'Intl Backslash',
+  0x00070065: 'Context Menu',
+  0x00070066: 'Power',
+  0x00070067: 'Numpad Equal',
+};
+
 class _CodeScanListenerState extends State<CodeScanListener> {
   late final suffixKey = switch (widget.suffixType) {
     SuffixType.enter => LogicalKeyboardKey.enter,
@@ -118,32 +195,35 @@ class _CodeScanListenerState extends State<CodeScanListener> {
   DateTime? _lastScannedCharCodeTime;
 
   bool _keyBoardCallback(KeyEvent keyEvent) {
-    // print("timestamp: ${keyEvent.timeStamp}");
-    // print("keyId: ${keyEvent.logicalKey.keyId}");
-    // print("logicalKey: ${keyEvent}");
-    // print("char: ${keyEvent.character}");
+    // Duration? prevDuration;
     //
-    // print("char: ${keyEvent.character}");
-
-    Duration? prevDuration;
-
-    final duration = keyEvent.timeStamp;
-
-    /// Avoid repeated key presse - specifically on Sunmi scanners
-    if (prevDuration == duration) {
-      return false;
-    }
-
-    prevDuration = duration;
+    // final duration = keyEvent.timeStamp;
+    //
+    // /// Avoid repeated key presse - specifically on Sunmi scanners
+    // if (prevDuration == duration) {
+    //   return false;
+    // }
+    //
+    // prevDuration = duration;
 
     if (keyEvent is! KeyDownEvent) {
-      return false;
+      return (Platform.isAndroid || Platform.isIOS);
     }
 
-    // print("keyEvent: $keyEvent");
+    // final test = HardwareKeyboard.instance.physicalKeysPressed;
     //
-    // print("logicalKey : ${keyEvent.logicalKey}");
-    final key = keyMap[keyEvent.logicalKey.keyLabel];
+    // print(test);
+
+    // print("timestamp: ${keyEvent.timeStamp}");
+    // print("keyId: ${upEvent.physicalKey.usbHidUsage}");
+
+    // print("logicalKey: ${upEvent.deviceType}");
+    // print("char: ${upEvent.character}");
+
+    // print(keyEvent);
+
+    final key = keyMap[keyEvent.logicalKey.keyLabel] ??
+        _debugNames[keyEvent.physicalKey.usbHidUsage];
 
     if (keyEvent.logicalKey == suffixKey) {
       _controller.sink.add(suffix);
@@ -152,7 +232,7 @@ class _CodeScanListenerState extends State<CodeScanListener> {
       _controller.sink.add(key);
     }
 
-    return false;
+    return (Platform.isIOS || Platform.isAndroid);
   }
 
   @override
